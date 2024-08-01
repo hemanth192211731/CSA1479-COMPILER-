@@ -1,0 +1,29 @@
+%{
+#include <stdio.h>
+int macro_count = 0, header_count = 0;
+%}
+
+%%
+"#define" [a-zA-Z_]+ {
+  macro_count++;
+  printf("Macro defined: %s\n", yytext + 8); // Skip "#define "
+}
+"#include" "<"[^>]+">" {
+  header_count++;
+  printf("Header included: %s\n", yytext + 8); // Skip "#include <" and ">"
+}
+.|\n { /* Ignore other characters */ }
+%%
+
+int main() {
+  yyin = fopen("sample.c", "r");
+  yylex();
+  fclose(yyin);
+
+  printf("Number of macros: %d\n", macro_count);
+  printf("Number of headers: %d\n", header_count);
+}
+int yywrap()
+{
+return 1;
+}

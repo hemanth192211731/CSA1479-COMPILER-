@@ -1,0 +1,37 @@
+%{
+#include <stdio.h>
+
+int char_count = 0, line_count = 0, word_count = 0;
+int in_comment = 0;
+%}
+
+%%
+[ \t\n] {
+    char_count += yyleng;
+    if (*yytext == '\n') {
+        line_count++;
+    }
+}
+"//".* { /* Single-line comment */ }
+"/*" { in_comment = 1; }
+"*"/"*" { in_comment = 0; }
+<COMMENT>[^*\n]* { char_count += yyleng; }
+<COMMENT>"*" { }
+<COMMENT>\n { line_count++; char_count += yyleng; }
+[a-zA-Z][a-zA-Z0-9]{0,31} { word_count++; char_count += yyleng; }
+. { char_count++; }
+%%
+
+int main() {
+    yyin = fopen("sample.c", "r");
+    yylex();
+    fclose(yyin);
+
+    printf("Characters: %d\n", char_count);
+    printf("Lines: %d\n", line_count);
+    printf("Words: %d\n", word_count);
+}
+int yywrap()
+{
+return 1;
+}

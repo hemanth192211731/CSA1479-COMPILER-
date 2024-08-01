@@ -1,0 +1,44 @@
+%{
+#include <stdio.h>
+int comment_count = 0;
+int in_comment = 0;
+FILE *output_file;
+%}
+
+%%
+"//".* {
+  comment_count++;
+}
+"/*" {
+  in_comment = 1;
+}
+"*"/ {
+  in_comment = 0;
+}
+<COMMENT>[^*\n]* { }
+<COMMENT>"*" { }
+<COMMENT>\n { comment_count++; }
+\n {
+  if (!in_comment) {
+    fprintf(output_file, "\n");
+  }
+}
+. {
+  if (!in_comment) {
+    fprintf(output_file, "%s", yytext);
+  }
+}
+%%
+
+int main() {
+  yyin = fopen("input.c", "r");
+  output_file = fopen("output.c", "w");
+  yylex();
+  fclose(yyin);
+  fclose(output_file);
+  printf("Number of comment lines: %d\n", comment_count);
+}
+int yywrap()
+{
+return 1;
+}

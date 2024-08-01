@@ -1,0 +1,18 @@
+%{
+#include <stdio.h>
+%}
+
+%%
+"<"[^>]*">" { printf("HTML tag: %s\n", yytext); }
+.|\n { /* Ignore other characters */ }
+%%
+
+int main() {
+    yyin = fopen("sample.html", "r");
+    yylex();
+    fclose(yyin);
+}
+int yywrap()
+{
+return 1;
+}

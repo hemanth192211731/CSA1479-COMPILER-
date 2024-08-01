@@ -1,0 +1,20 @@
+%{
+#include <stdio.h>
+%}
+
+%%
+[0-9]+ { printf("Number: %s\n", yytext); }
+"+" { printf("Operator: +\n"); }
+"-" { printf("Operator: -\n"); }
+"*" { printf("Operator: *\n"); }
+"/" { printf("Operator: /\n"); }
+\n { printf("\n"); }
+%%
+
+int main() {
+    yylex();
+}
+int yywrap()
+{
+return 1;
+}

@@ -1,0 +1,22 @@
+%{
+#include <stdio.h>
+int max_len = 0;
+%}
+
+%%
+[a-zA-Z]+ {
+    if (yyleng > max_len) {
+        max_len = yyleng;
+    }
+}
+.|\n { /* Ignore other characters */ }
+%%
+
+int main() {
+    yylex();
+    printf("Length of the longest word: %d\n", max_len);
+}
+int yywrap()
+{
+return 1;
+}

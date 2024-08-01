@@ -1,0 +1,17 @@
+%{
+#include <stdio.h>
+%}
+
+%%
+[0-9]+(\.[0-9]+)? { printf("Constant: %s\n", yytext); }
+[0-9]+ { printf("Constant: %s\n", yytext); }
+.|\n { /* Ignore other characters */ }
+%%
+
+int main() {
+    yylex();
+}
+int yywrap()
+{
+return 1;
+}

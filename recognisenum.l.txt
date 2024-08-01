@@ -1,0 +1,39 @@
+%{
+#include <stdio.h>
+#include <string.h>
+
+char numbers[100][20];
+char words[100][20];
+int num_count = 0, word_count = 0;
+%}
+
+%%
+[0-9]+ {
+    strcpy(numbers[num_count], yytext);
+    num_count++;
+}
+[a-zA-Z]+ {
+    strcpy(words[word_count], yytext);
+    word_count++;
+}
+[ \t\n] { /* Ignore whitespace */ }
+. { printf("Error: Invalid character %s\n", yytext); }
+%%
+
+int main() {
+    yylex();
+
+    printf("Numbers:\n");
+    for (int i = 0; i < num_count; i++) {
+        printf("%s\n", numbers[i]);
+    }
+
+    printf("Words:\n");
+    for (int i = 0; i < word_count; i++) {
+        printf("%s\n", words[i]);
+    }
+}
+int yywrap()
+{
+return 1;
+}

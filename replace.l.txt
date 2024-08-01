@@ -1,0 +1,24 @@
+%{
+#include <stdio.h>
+#include <string.h>
+
+char *old_word = "old";
+char *new_word = "new";
+%}
+
+%%
+{old_word} { printf("%s", new_word); }
+. { printf("%s", yytext); }
+%%
+
+int main() {
+    yyin = fopen("input.txt", "r");
+    yyout = fopen("output.txt", "w");
+    yylex();
+    fclose(yyin);
+    fclose(yyout);
+}
+int yywrap()
+{
+return 1;
+}
